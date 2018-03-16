@@ -2,7 +2,8 @@
 var ctx = canvas.getContext("2d");
 ctx.font = "9px Arial";*/
 
-var dx =1; //Bird's velocity
+var dx = 1; //Bird's velocity
+var dy = 1; //Bird's gravity variable
 var i;
 var j;
 var p; //Tunnel's X-xoordinate
