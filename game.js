@@ -8,7 +8,7 @@ var b=0;
 var birdColor = Math.random(); //Bird Color Selector
 var bx = 40; //Bird's Width
 var by = 40; //Bird's Height
-var dy = 1; //Bird's velocity
+var dy = -1; //Bird's Uppertap Velocity
 var g = 1.5; //Bird's gravity variable
 var pipeDist = 400;// Distance b/w North and South Pipe
 var px = 51; //pipe's width
@@ -136,15 +136,15 @@ function pipe(p,q){
 	this.q = q;
 
 	this.update = function(){
-		if(this.p <= 0){
-			this.p = canvasWidth-px;
+		if(this.p <= -px){
+			this.p = (canvasWidth-px)+20;
 			this.q = -1*(Math.random()*170);
 		}
 	}
 }
 
 function pipePosition(i){
-	var p=canvasWidth-px+i*(100); //Tunnel's X-xoordinate
+	var p= canvasWidth+i*200; //Tunnel's X-xoordinate
 	var q= -1*(Math.random()*170); //Tunnel's Y-coordinate
 	pipeArray.push(new pipe(p,q));
 }
@@ -167,19 +167,21 @@ function draw(){
 		pipeArray[j].update();
 		ctx.drawImage(pipeNorth,pipeArray[j].p,pipeArray[j].q);
 		ctx.drawImage(pipeSouth,pipeArray[j].p,pipeArray[j].q+pipeDist);
-		px += pdx;
-		pipeArray[j].p=canvasWidth-px+j*(300);
+		pipeArray[j].p-=pdx;
 	}
 	ctx.drawImage(base,0,canvasHeight-112,canvasWidth,112);
 
 	document.addEventListener('keydown',function(event){
 				if(event.keyCode == 32){ 
-					y -= dy;
+					y += dy;
 					wing.play();  
 				}
 			}, false);
 
 	b+=0.1;
+	if(b==0.3){
+		b=0;
+	}
 	y+=g;
 
 	requestAnimationFrame(draw);
