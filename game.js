@@ -173,7 +173,7 @@ function draw(){
 
 	document.addEventListener('keydown',function(event){
 				if(event.keyCode == 32){ 
-					y += dy;
+					y+=dy;
 					wing.play();  
 				}
 			}, false);
