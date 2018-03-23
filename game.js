@@ -10,14 +10,12 @@ var bx = 40; //Bird's Width
 var by = 40; //Bird's Height
 var dx = 1; //Bird's velocity
 var dy = 3; //Bird's gravity variable
-var i;
-var j;
 var pipeDist = 400;
 var px = 51; //51 x 317
 var py = 317;
-var pdx = 2.5;
-var p=canvasWidth-px; //Tunnel's X-xoordinate
-var q=0; //Tunnel's Y-coordinate
+var pdx = 2;
+/*var p=canvasWidth-px; //Tunnel's X-xoordinate
+var q= -(Math.random()*170); //Tunnel's Y-coordinate*/
 var score = 0;
 var x = 80;  //Bird's X-coordinate
 var y = 260;  //Bird's Y-coordinate
@@ -44,9 +42,12 @@ var yu = new Image(); //Yellowbird upflap
 var birdDown = new Image(); //To select among Blue, Red, Yellow
 var birdMid = new Image(); //To select among Blue, Red, Yellow
 var birdUp = new Image(); //To select among Blue, Red, Yellow
+var pipeNorth = new Image();
+var pipeSouth = new Image();
 
 var date = new Date(); // To get Current Date
 var birdArray = new Array(); //Array to store the down,mid,up frames of the bird
+var pipeArray = [];
 
 base.src = "sprites/base.png";
 bgDay.src = "sprites/background-day.png";
@@ -83,7 +84,7 @@ function stopAudio(audio) {    //Function to stop audio the current audio from p
 
 function bgSelector(){
 	
-	if((date.getHours()) < 19)
+	if((date.getHours())<19 && date.getHours()>6)
 		bg = bgDay;
 	else
 		bg = bgNight;
@@ -110,7 +111,20 @@ function birdColorSelector(){
 	}
 }
 
+function pipeSelector(){
+	
+	if(Math.random() < 0.5){
+		pipeNorth = pipeNorthG;
+		pipeSouth = pipeSouthG;
+	}
+	else{
+		pipeNorth = pipeNorthR;
+		pipeSouth = pipeSouthR;
+	}
+}
+
 function birdFramesInitialiser(){
+	
 	birdArray[0] = new Image();
 	birdArray[1] = new Image();
 	birdArray[2] = new Image();
@@ -119,30 +133,57 @@ function birdFramesInitialiser(){
 	birdArray[2] = birdUp;
 }
 
+function pipe(p,q){
+	this.p = p;
+	this.q = q;
+
+	this.update = function(){
+		if(this.p< -1*px){
+			this.p = canvasWidth;
+			this.q = -(Math.random()*170);
+		}
+	}
+
+}
+function pipePosition(i){
+	var p=canvasWidth-px+i*(100); //Tunnel's X-xoordinate
+	var q= -1*(Math.random()*170); //Tunnel's Y-coordinate
+	pipeArray.push(new pipe(p,q));
+	//balloonArray.push(new balloon(a,b,strRad,dy,balloonColor));
+}
+
+for(i=0;i<2;i++){
+	pipePosition(i);
+}
+
 function gameInitialiser(){
 	bgSelector();
 	birdColorSelector();
+	pipeSelector();
 	birdFramesInitialiser();
 }
 
 function draw(){
 	ctx.drawImage(bg,0,0,canvasWidth,canvasHeight);
 	ctx.drawImage(birdArray[Math.floor(b%3)],x,y,bx,by);
-	ctx.drawImage(pipeNorthG,p,q);
-	ctx.drawImage(pipeSouthG,p,q+pipeDist);
+	for(j=0; j<pipeArray.length; j++){
+		pipeArray[j].update();
+		ctx.drawImage(pipeNorth,pipeArray[j].p,pipeArray[j].q);
+		ctx.drawImage(pipeSouth,pipeArray[j].p,pipeArray[j].q+pipeDist)
+		px += pdx;
+		pipeArray[j].p=canvasWidth-px+j*(300);
+	}
 	ctx.drawImage(base,0,canvasHeight-112,canvasWidth,112);
 
 	document.addEventListener('keydown',function(event){
 				if(event.keyCode == 32){ 
-					y-=0.8;
+					y -= 1.5;
 					wing.play();  
 				}
 			}, false);
 
 	b+=0.1;
 	y+=dy;
-	px += pdx;
-	p=canvasWidth-px;
 
 	requestAnimationFrame(draw);
 }
