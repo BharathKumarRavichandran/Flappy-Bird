@@ -192,6 +192,8 @@ function gameInitialiser(){
 	birdColorSelector();
 	pipeSelector();
 	birdFramesInitialiser();
+	ctx.fillStyle= '#000000';
+	ctx.font = '25px Arial';
 }
 
 function draw(){
@@ -206,7 +208,7 @@ function draw(){
 		pipeArray[j].p-=pdx;
 	}
 	ctx.drawImage(base,0,canvasHeight-baseHeight,canvasWidth,baseHeight);
-
+	ctx.fillText("Score: "+score,20,50);
 	document.addEventListener('keydown',function(event){
 				if(event.keyCode == 32){ //Spacebar keycode
 					y=y-dy;
