@@ -3,6 +3,8 @@ var ctx = canvas.getContext("2d");
 
 var canvasWidth=400;
 var canvasHeight=660;
+var screenWidth=window.innerWidth;
+var w;
 
 var base = new Image(); //Base Surface Image
 var bg = new Image(); // Background selector variable 
@@ -57,6 +59,8 @@ var wing = new Audio('audio/wing.wav');
 
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
+w = (screenWidth/2) - screenWidth*0.125;
+canvas.style.marginLeft = w+'px';
 
 function start(){
 
@@ -245,7 +249,6 @@ function draw(){
 			}, false);
 		
 		return;
-
 	}
 
 	requestAnimationFrame(draw);
