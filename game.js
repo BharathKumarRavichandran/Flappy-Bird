@@ -4,24 +4,6 @@ var ctx = canvas.getContext("2d");
 var canvasWidth=400;
 var canvasHeight=660;
 
-function start(){
-
-var b=0;
-var birdColor = Math.random(); //Bird Color Selector
-var baseWidth = 336; //Base-Ground png's actual width
-var baseHeight = 112; //Base-Ground png's actual height
-var bx = 40; //Bird's Width
-var by = 40; //Bird's Height
-var dy = 1; //Bird's Uppertap Velocity
-var g = 1.5; //Bird's gravity variable
-var pipeDist = 400;// Distance b/w North and South Pipe
-var px = 51; //pipe's width
-var py = 317; //pipe's height
-var pdx = 1; //pipe moving velocity
-var score = 0;
-var x = 80;  //Bird's X-coordinate
-var y = 260;  //Bird's Y-coordinate
-
 var base = new Image(); //Base Surface Image
 var bg = new Image(); // Background selector variable 
 var bgDay = new Image(); //Background Image Day
@@ -46,11 +28,6 @@ var birdMid = new Image(); //To select among Blue, Red, Yellow
 var birdUp = new Image(); //To select among Blue, Red, Yellow
 var pipeNorth = new Image();
 var pipeSouth = new Image();
-
-var date = new Date(); // To get Current Date
-var birdArray = new Array(); //Array to store the down,mid,up frames of the bird
-var pipeArray = [];
-var pause = false;
 
 base.src = "sprites/base.png";
 bgDay.src = "sprites/background-day.png";
@@ -80,6 +57,29 @@ var wing = new Audio('audio/wing.wav');
 
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
+
+function start(){
+
+var b=0;
+var birdColor = Math.random(); //Bird Color Selector
+var baseWidth = 336; //Base-Ground png's actual width
+var baseHeight = 112; //Base-Ground png's actual height
+var bx = 40; //Bird's Width
+var by = 40; //Bird's Height
+var dy = 1; //Bird's Uppertap Velocity
+var g = 1.5; //Bird's gravity variable
+var pipeDist = 400;// Distance b/w North and South Pipe
+var px = 51; //pipe's width
+var py = 317; //pipe's height
+var pdx = 1; //pipe moving velocity
+var score = 0;
+var x = 80;  //Bird's X-coordinate
+var y = 260;  //Bird's Y-coordinate
+
+var date = new Date(); // To get Current Date
+var birdArray = new Array(); //Array to store the down,mid,up frames of the bird
+var pipeArray = [];
+var pause = false;
 
 function stopAudio(audio) {    //Function to stop audio the current audio from playing
     audio.pause();
@@ -150,24 +150,28 @@ function pipe(p,q){
 
 	this.collide = function(){
 
-		/*if( ((x+bx>=this.p) && (x<=(this.p+px)) ) && ( (y<=(this.q+py)) || (y>=(this.q+pipeDist)))) {
-			pause=true;
-		}*/
-
 		if( (x+bx>=this.p) && (x<=(this.p+px)) && (y<=(this.q+py))) {   //North Pipe Collision Testing
 			pause=true;
+			hit.play();
 		}
 
-		if( (x+bx>=this.p) && (x<=(this.p+px)) && (y+by>=(this.q+pipeDist)) ) {	  //South Pipe Collision Testing
+		else if( (x+bx>=this.p) && (x<=(this.p+px)) && (y+by>=(this.q+pipeDist)) ) {	  //South Pipe Collision Testing
 			pause=true;
+			hit.play();
 		}
 
-		if( (y+by) >= (canvasHeight-baseHeight) ) {   //Ground Collision Testing
+		else if( (y+by) >= (canvasHeight-baseHeight) ) {   //Ground Collision Testing
 			pause=true;
+			die.play();
 		}
+
+	}
+
+	this.score = function(){
 
 		if(x==(this.p+px) && (y>(this.q+py)) && (y<(this.q+pipeDist))) {
 			score++;
+			point.play();
 		}
 
 	}
@@ -198,12 +202,13 @@ function draw(){
 		ctx.drawImage(pipeNorth,pipeArray[j].p,pipeArray[j].q);
 		ctx.drawImage(pipeSouth,pipeArray[j].p,pipeArray[j].q+pipeDist);
 		pipeArray[j].collide();
+		pipeArray[j].score();
 		pipeArray[j].p-=pdx;
 	}
 	ctx.drawImage(base,0,canvasHeight-baseHeight,canvasWidth,baseHeight);
 
 	document.addEventListener('keydown',function(event){
-				if(event.keyCode == 32){ 
+				if(event.keyCode == 32){ //Spacebar keycode
 					y=y-dy;
 					wing.play();  
 				}
@@ -216,7 +221,7 @@ function draw(){
 	y+=g;
 
 	if(pause==true){
-			die.play();
+
 			ctx.fillStyle = "#000000";
 			ctx.globalAlpha = 0.6;
 			ctx.fillRect(70,180,250,150);
@@ -229,6 +234,7 @@ function draw(){
 			ctx.fillText("Score : "+score,130,260);
 			ctx.fillText("Press R to restart",130,290);
 			gameOver.play();
+			
 			document.addEventListener('keydown',function(event){
 				if(event.keyCode == 82){ //r keyCode
 					stopAudio(gameOver);
