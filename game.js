@@ -4,11 +4,15 @@ var ctx = canvas.getContext("2d");
 var canvasWidth=400;
 var canvasHeight=660;
 
+function start(){
+
 var b=0;
 var birdColor = Math.random(); //Bird Color Selector
+var baseWidth = 336; //Base-Ground png's actual width
+var baseHeight = 112; //Base-Ground png's actual height
 var bx = 40; //Bird's Width
 var by = 40; //Bird's Height
-var dy = -1; //Bird's Uppertap Velocity
+var dy = 1; //Bird's Uppertap Velocity
 var g = 1.5; //Bird's gravity variable
 var pipeDist = 400;// Distance b/w North and South Pipe
 var px = 51; //pipe's width
@@ -46,6 +50,7 @@ var pipeSouth = new Image();
 var date = new Date(); // To get Current Date
 var birdArray = new Array(); //Array to store the down,mid,up frames of the bird
 var pipeArray = [];
+var pause = false;
 
 base.src = "sprites/base.png";
 bgDay.src = "sprites/background-day.png";
@@ -67,6 +72,7 @@ ym.src = "sprites/yellowbird-midflap.png";
 yu.src = "sprites/yellowbird-upflap.png";
 
 var die = new Audio('audio/die.wav');
+var gameOver = new Audio('audio/gameover.mp3');
 var hit = new Audio('audio/hit.wav');
 var point = new Audio('audio/point.wav');
 var swoosh = new Audio('audio/swoosh.wav');
@@ -141,6 +147,30 @@ function pipe(p,q){
 			this.q = -1*(Math.random()*170);
 		}
 	}
+
+	this.collide = function(){
+
+		/*if( ((x+bx>=this.p) && (x<=(this.p+px)) ) && ( (y<=(this.q+py)) || (y>=(this.q+pipeDist)))) {
+			pause=true;
+		}*/
+
+		if( (x+bx>=this.p) && (x<=(this.p+px)) && (y<=(this.q+py))) {   //North Pipe Collision Testing
+			pause=true;
+		}
+
+		if( (x+bx>=this.p) && (x<=(this.p+px)) && (y+by>=(this.q+pipeDist)) ) {	  //South Pipe Collision Testing
+			pause=true;
+		}
+
+		if( (y+by) >= (canvasHeight-baseHeight) ) {   //Ground Collision Testing
+			pause=true;
+		}
+
+		if(x==(this.p+px) && (y>(this.q+py)) && (y<(this.q+pipeDist))) {
+			score++;
+		}
+
+	}
 }
 
 function pipePosition(i){
@@ -167,13 +197,14 @@ function draw(){
 		pipeArray[j].update();
 		ctx.drawImage(pipeNorth,pipeArray[j].p,pipeArray[j].q);
 		ctx.drawImage(pipeSouth,pipeArray[j].p,pipeArray[j].q+pipeDist);
+		pipeArray[j].collide();
 		pipeArray[j].p-=pdx;
 	}
-	ctx.drawImage(base,0,canvasHeight-112,canvasWidth,112);
+	ctx.drawImage(base,0,canvasHeight-baseHeight,canvasWidth,baseHeight);
 
 	document.addEventListener('keydown',function(event){
 				if(event.keyCode == 32){ 
-					y+=dy;
+					y=y-dy;
 					wing.play();  
 				}
 			}, false);
@@ -184,8 +215,37 @@ function draw(){
 	}
 	y+=g;
 
+	if(pause==true){
+			die.play();
+			ctx.fillStyle = "#000000";
+			ctx.globalAlpha = 0.6;
+			ctx.fillRect(70,180,250,150);
+			ctx.globalAlpha = 1;
+			ctx.fillStyle = "#FF0000";
+			ctx.font = "25px Arial";
+			ctx.fillText("GAME OVER",120,220);
+			ctx.font = "15px Arial";
+			ctx.fillStyle = "#FFFFFF";
+			ctx.fillText("Score : "+score,130,260);
+			ctx.fillText("Press R to restart",130,290);
+			gameOver.play();
+			document.addEventListener('keydown',function(event){
+				if(event.keyCode == 82){ //r keyCode
+					stopAudio(gameOver);
+					start();
+				}
+			}, false);
+		
+		return;
+
+	}
+
 	requestAnimationFrame(draw);
 }
 
 gameInitialiser();
 draw();
+
+}
+
+start();
