@@ -2,7 +2,7 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
 var canvasWidth=400;
-var canvasHeight=660;
+var canvasHeight=620;
 var screenWidth=window.innerWidth;
 var w;
 
@@ -51,6 +51,7 @@ ym.src = "sprites/yellowbird-midflap.png";
 yu.src = "sprites/yellowbird-upflap.png";
 
 var die = new Audio('audio/die.wav');
+var dead = new Audio('audio/dead.wav');
 var gameOver = new Audio('audio/gameover.mp3');
 var hit = new Audio('audio/hit.wav');
 var point = new Audio('audio/point.wav');
@@ -59,7 +60,7 @@ var wing = new Audio('audio/wing.wav');
 
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
-w = (screenWidth/2) - screenWidth*0.125;
+w = (screenWidth/2) - screenWidth*0.135;
 canvas.style.marginLeft = w+'px';
 
 function start(){
@@ -241,7 +242,7 @@ function draw(){
 			ctx.fillStyle = "#FFFFFF";
 			ctx.fillText("Score : "+score,130,260);
 			ctx.fillText("Press R to restart",130,290);
-			gameOver.play();
+			dead.play();
 			
 			document.addEventListener('keydown',function(event){
 				if(event.keyCode == 82){ //r keyCode
