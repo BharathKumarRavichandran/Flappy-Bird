@@ -61,7 +61,7 @@ var wing = new Audio('audio/wing.wav');
 canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 w = (screenWidth/2) - screenWidth*0.135;
-canvas.style.marginLeft = w+'px';
+//canvas.style.marginLeft = w+'px';
 
 var b=0;
 var birdColor = Math.random(); //Bird Color Selector
