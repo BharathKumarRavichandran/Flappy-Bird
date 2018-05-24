@@ -8,6 +8,10 @@ h1{
 	letter-spacing: 3px;
 }
 
+canvas{
+	border-radius: 30px;
+}
+
 #foot{
 	color: white;
 	text-align: center;
