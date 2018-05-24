@@ -63,16 +63,14 @@ canvas.height = canvasHeight;
 w = (screenWidth/2) - screenWidth*0.135;
 canvas.style.marginLeft = w+'px';
 
-function start(){
-
 var b=0;
 var birdColor = Math.random(); //Bird Color Selector
 var baseWidth = 336; //Base-Ground png's actual width
 var baseHeight = 112; //Base-Ground png's actual height
 var bx = 40; //Bird's Width
 var by = 40; //Bird's Height
-var dy = 1; //Bird's Uppertap Velocity
-var g = 1.5; //Bird's gravity variable
+var dy = 55; //Bird's Uppertap Velocity
+var g = 1.8; //Bird's gravity variable
 var pipeDist = 450;// Distance b/w North and South Pipe
 var px = 51; //pipe's width
 var py = 317; //pipe's height
@@ -201,6 +199,20 @@ function gameInitialiser(){
 	ctx.font = '25px Arial';
 }
 
+document.addEventListener('keydown',function(event){
+				if(event.keyCode==32){ //Spacebar keycode
+					y=y-dy;
+					wing.play();  
+				}
+			}, false);
+
+document.addEventListener('keydown',function(event){
+				if(event.keyCode == 82){ //r keyCode
+					stopAudio(gameOver);
+        		window.location.reload();
+				}
+			}, false);
+
 function draw(){
 	ctx.drawImage(bg,0,0,canvasWidth,canvasHeight);
 	ctx.drawImage(birdArray[Math.floor(b%3)],x,y,bx,by);
@@ -216,12 +228,6 @@ function draw(){
 	ctx.fillStyle= '#000000';
 	ctx.font = '25px Arial';
 	ctx.fillText("Score: "+score,20,50);
-	document.addEventListener('keydown',function(event){
-				if(event.keyCode == 32){ //Spacebar keycode
-					y=y-dy;
-					wing.play();  
-				}
-			}, false);
 
 	b+=0.1;
 	if(b==0.3){
@@ -236,20 +242,13 @@ function draw(){
 			ctx.fillRect(70,180,250,150);
 			ctx.globalAlpha = 1;
 			ctx.fillStyle = "#FF0000";
-			ctx.font = "25px Arial";
-			ctx.fillText("GAME OVER",120,220);
-			ctx.font = "15px Arial";
+			ctx.font = "30px Arial";
+			ctx.fillText("GAME OVER",110,220);
+			ctx.font = "17px Arial";
 			ctx.fillStyle = "#FFFFFF";
 			ctx.fillText("Score : "+score,130,260);
 			ctx.fillText("Press R to restart",130,290);
 			dead.play();
-			
-			document.addEventListener('keydown',function(event){
-				if(event.keyCode == 82){ //r keyCode
-					stopAudio(gameOver);
-					start();
-				}
-			}, false);
 		
 		return;
 	}
@@ -259,7 +258,3 @@ function draw(){
 
 gameInitialiser();
 draw();
-
-}
-
-start();
