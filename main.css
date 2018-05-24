@@ -10,6 +10,7 @@ h1{
 
 canvas{
 	border-radius: 30px;
+	margin-left: 36.5vw;
 }
 
 #foot{
@@ -21,4 +22,52 @@ canvas{
 
 #heart{
 	color: red;
+}
+
+#nameLink{
+	text-decoration: none;
+	color: orange;
+}
+
+@media only screen and (max-width: 1024px){
+
+canvas{
+	margin-left: 30vw;
+}
+
+}
+
+@media only screen and (max-width: 770px){
+
+canvas{
+	margin-left: 23vw;
+}
+
+}
+
+@media only screen and (max-width: 500px){
+
+canvas{
+	margin-left: 1vw;
+}
+
+}
+
+@media only screen and (max-width: 380px){
+
+canvas{
+	width: 350px;
+	margin-left: 0.8vw;
+}
+
+}
+
+@media only screen and (max-width: 320px){
+
+canvas{
+	width: 280px;
+	height: 500px;
+	margin-left: 2.5vw;
+}
+
 }
